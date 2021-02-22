@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tab切换</title>
+  <link rel="stylesheet" href="./ImitTab.css">
+</head>
+<body>
+  <div class="tab">
+    <div class="tab-item">
+      <ul>
+        <li color="orange">颜色</li>
+        <li color="yellow">美食</li>
+        <li color="blue">宠物</li>
+        <li color="green">技术</li>
+        <li color="tomato">娱乐</li>
+      </ul>
+    </div>
+    <div class="tab-content">
+      <div class="content" id="select">
+        <h3>红色</h3>
+        <h3>黄色</h3>
+        <h3>绿色</h3>
+      </div>
+      <div class="content">
+        <h3>蛋糕</h3>
+        <h3>面包</h3>
+        <h3>酸奶</h3>
+      </div>
+      <div class="content">
+        <h3>金毛</h3>
+        <h3>阿拉斯加</h3>
+        <h3>英短</h3>
+      </div>
+      <div class="content">
+        <h3>JavaScript</h3>
+      </div>
+      <div class="content">
+        <h3>TaylorSwift</h3>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tabItem = document.getElementsByClassName('tab-item')
+    const item = tabItem[0].getElementsByTagName('li')
+    console.log(item);
+    const tabContent = document.getElementsByClassName('tab-content')
+    const content = tabContent[0].getElementsByClassName('content')
+    console.log(content);
+    var body = document.getElementsByTagName("body")[0]
+    console.log(body);
+
+    window.onload = function() {
+      // 给每个item添加onmouseover事件
+      length = content.length
+      for(let i = 0; i < length; i++) {
+        item[i].onmouseover = function() {
+          for(let j = 0; j < length; j++) {
+            item[j].className = ''
+            content[j].style.display = "none"
+          }
+          item[i].className = 'color'
+          content[i].style.display = "block"
+          var color = item[i].getAttribute("color")
+          var backgroundColor = "background-color:" + color
+          body.setAttribute("style", backgroundColor)
+        }
+      }
+    }
+  </script>
+</body>
+</html>

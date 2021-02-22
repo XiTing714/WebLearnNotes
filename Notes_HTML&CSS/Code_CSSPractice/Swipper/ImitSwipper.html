@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>轮播图demo</title>
+  <link rel="stylesheet" href="./ImitSwipper.css">
+</head>
+<body>
+  <div class="main">
+    <div class="gallery">
+      <img src="./img/s4.png">
+      <img src="./img/s1.png">
+      <img src="./img/s2.png">
+      <img src="./img/s3.png">
+      <img src="./img/s4.png">
+      <img src="./img/s1.png">
+    </div>
+    <div class="indicator">
+      <div class="on"></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div class="button">
+      <button class="left"><img src="./img/button.png"></button>
+      <button class="right"><img src="./img/button.png"></button>
+    </div>
+  </div>
+  <script>
+    // 图片容器: (4) 1 2 3 4 (1)
+    // 获取图片容器，让其left为负图片宽度，让客户看到图1
+    var gallery = document.querySelector('.gallery')
+    gallery.style.left = -500 + 'px';
+    // 获取图片个数:
+    var picList = gallery.getElementsByTagName('img')
+    var picListLength = picList.length
+
+    // 获取指示灯和按钮
+    var indicator = document.querySelector('.indicator')
+    var indicatorList = indicator.getElementsByTagName('div')
+    var leftBtn = document.querySelector('.left')
+    var rightBtn = document.querySelector('.right')
+    
+    // 设一个初始值，使得按钮与指示灯有关系/连接
+    var currentIndex = 1
+    // 设置timeout定时器，方便在指示灯进行公共切换时停止定时器
+    var timeOut = null
+
+    // 公共切换函数
+    var commonSwitch = function() {
+      gallery.style.left = -500*currentIndex + 'px'
+      gallery.style.transition = '1.5s'
+      for(var i = 0; i < indicatorList.length; i++) {
+        indicatorList[i].className = ''
+      }
+      indicatorList[currentIndex-1].className = 'on'
+    } 
+
+    // 从尾到首切换函数
+    var tailToHead = function() {
+      if(currentIndex == picListLength-1) {
+        gallery.style.left = -500*currentIndex + 'px'
+        gallery.style.transition = '1.5s'
+        //禁用按钮: 
+        leftBtn.disabled = true 
+        rightBtn.disabled = true 
+        // 指示灯变化: 
+        for(var i = 0; i < indicatorList.length; i++) {
+          indicatorList[i].className = ''
+        }
+        indicatorList[0].className = 'on'
+        // 在1.5s这个结束transition的时刻瞬间把left改为-500
+        timeOut = setTimeout(function() {
+          currentIndex = 1
+          gallery.style.left = -500*currentIndex + 'px'
+          gallery.style.transition = '0s'
+          leftBtn.disabled = false
+          rightBtn.disabled = false
+        }, 1500)
+      }
+    }
+
+    // 从首倒回尾切换函数
+    var headToTail = function() {
+      if(currentIndex == 0) {
+        gallery.style.left = -500*currentIndex + 'px'
+        gallery.style.transition = '1.5s'
+        //禁用按钮: 
+        leftBtn.disabled = true 
+        rightBtn.disabled = true 
+        // 指示灯变化: 
+        for(var i = 0; i < indicatorList.length; i++) {
+          indicatorList[i].className = ''
+        }
+        indicatorList[indicatorList.length-1].className = 'on'
+        // 在1.5s这个结束transition的时刻瞬间把left改为-500
+        timeOut = setTimeout(function() {
+          currentIndex = indicatorList.length
+          gallery.style.left = -500*currentIndex + 'px'
+          gallery.style.transition = '0s'
+          leftBtn.disabled = false
+          rightBtn.disabled = false
+        }, 1500)
+      }
+    }
+
+    // 1. (1)右按钮切换
+    rightBtn.onclick = function() {
+      // console.log('sss');
+      currentIndex++
+      if(currentIndex == picListLength-1) {
+        tailToHead()
+      } else {
+        commonSwitch()
+      }
+    }
+
+    // 1. (2)左按钮切换
+    leftBtn.onclick = function() {
+      currentIndex--
+      if(currentIndex == 0) {
+        headToTail()
+      } else {
+        commonSwitch()
+      }
+    }
+
+    // 2. 点击指示灯切换
+    for(let i = 0; i < indicatorList.length; i++) {
+      indicatorList[i].onclick = function() {
+        if(i == 0 && currentIndex == indicatorList.length) {
+          currentIndex++
+          tailToHead()
+        } else if(i == (indicatorList.length - 1) && currentIndex == 1) {
+          currentIndex--
+          headToTail()
+        } else {
+          clearTimeout(timeOut)
+          currentIndex = i + 1
+          commonSwitch()
+        }
+      }
+    }
+
+    // 3. 自动切换
+    // 先设置一个变量接收定时器的返回值，方便随时停止定时器
+    var timeInterval = null
+    // 封装自动切换函数
+    var autoSwitch = function(interval) {
+      timeInterval = setInterval(() => {
+        currentIndex++
+        if(currentIndex == 5) {
+          tailToHead()
+        } else {
+          commonSwitch()
+        }
+      }, interval)
+    }
+    // 页面一加载就开始自动切换
+    window.onload = function() {
+      autoSwitch(2000)
+      console.log(picListLength);
+    }
+
+    var main = document.querySelector('.main')
+    //当有鼠标划过画廊时停止定时器
+    main.onmouseenter = function () {
+      //console.log('鼠标进来了')
+      clearInterval(timeInterval)
+    }
+    //鼠标离开画廊时启动定时器
+    main.onmouseleave = function () {
+      //console.log('鼠标离开了');
+      autoSwitch(2000)
+    }
+  </script>
+</body>
+</html>

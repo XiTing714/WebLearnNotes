@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>轮播图</title>
+  <link rel="stylesheet" href="./Swipper.css">
+</head>
+<body>
+  <div class="contain">
+    <div class="carousel">
+        <div class="slide">
+            <img src="./img/1.png" alt="">
+            <img src="./img/2.png" alt="">
+            <img src="./img/3.png" alt="">
+        </div>
+    </div>
+    <div class="">
+        <button class="left">上一张</button>
+        <button class="right">下一张</button>
+    </div>
+    <ul class="indicator">
+        <li class="li-active"></li>
+        <li></li>
+        <li></li>
+    </ul>
+  </div>
+
+  <script>
+    var contain = document.querySelector('.contain');//获取需要改变left的元素
+    var slide = document.querySelector('.slide');//获取需要改变left的元素
+    var leftBtn = document.querySelector('.left');//获取左边按钮
+    var rightBtn = document.querySelector('.right');//获取右边按钮
+    var indicator = document.querySelector('.indicator');//指示灯父元素
+    var indicatorChild = indicator.children;//指示灯的子元素
+    var slideLength = indicatorChild.length+2;//轮播图个数 = 指示灯子元素个数+2
+    var timer = null;//定时器初始为null
+    var currentIndex = 1;//当前索引
+    var width = window.innerWidth;//屏幕宽度
+    
+    window.onload = function () {
+      var everyTime = 2000;//轮播的间隔时间
+      var firstDom = slide.firstElementChild.cloneNode(true);
+      var lastDom = slide.lastElementChild.cloneNode(true);
+      slide.appendChild(firstDom); //在最后插入一个first子节点副本
+      slide.insertBefore(lastDom, slide.firstElementChild); //在最前面插入last子节点副本
+      // 因此图片是这么排列的: (3) 1 2 3 (1)
+      slide.style.left = -width+'px';  //所以页面一打开的时候呈现是图片1
+
+      //页面打开后自动开启播放
+      autoPlay(everyTime);
+      //当有鼠标划过时停止定时器
+      contain.onmouseenter = function () {
+        clearInterval(timer);
+      };
+      //鼠标摞开时启动定时器
+      contain.onmouseleave = function () {
+        autoPlay(everyTime);
+      };
+      //点击左边按钮
+      leftBtn.onclick = function () {
+        currentIndex--;
+        if (currentIndex == 0) {
+            criticality(indicatorChild.length,'left');
+        } else {
+            play(-(width * currentIndex),currentIndex);
+        }
+      };   
+      //点击右边按钮
+      rightBtn.onclick = function () {
+        currentIndex++;
+        if (currentIndex == slideLength - 1) {
+          criticality(1,'right');
+        } else {
+          play(-(width * currentIndex),currentIndex);
+        }
+      };    
+      //指示灯点击时
+      for (let i = 0; i < indicatorChild.length; i++) {
+        indicatorChild[i].onmouseenter = function () {
+          //先将同级class移除；
+          for (var j = 0; j < indicatorChild.length; j++) {
+            if (indicatorChild[j].className == 'li-active') {
+              indicatorChild[j].className = '';
+            }
+          }
+          //点击时到达临界值
+          if (i == 0 && currentIndex == indicatorChild.length) {
+            currentIndex++;
+            criticality(1);
+          } else if(i == (indicatorChild.length -1) && currentIndex == 1) {
+            currentIndex--;
+            criticality(indicatorChild.length);
+          } else {
+              //设置所点击的元素class,并移动到指示灯所在图片
+              play(-(width * (i+1)),(i+1));
+              currentIndex = i+1;
+          }
+          }
+        }
+    };
+    
+    
+    // 封装自动播放函数
+    function autoPlay(period) {
+        timer = setInterval(function () {
+            currentIndex++;
+            //当移动到最后一张，也就是模拟的第一张
+            if (currentIndex == slideLength - 1) {
+                //首先清除原先的定时器
+                clearInterval(timer);
+                //处理临界情况
+                criticality(1);
+                //通次继续下一次轮播
+                return autoPlay(period);
+            } else {
+                if(currentIndex < slideLength-1){
+                    play(-(width * currentIndex),currentIndex); //为什么一开始是屏幕宽度的2倍？
+                }
+            }
+        }, period)
+    }
+    
+    // 封装轮播公共方法
+    function play(left,activeIndex) {
+        //1、图片移动left px；
+        slide.style.left = left + 'px';
+        slide.style.transition = 'left 1.5s';
+        //2、改变指示灯颜色
+        for(var i = 0;i<indicatorChild.length;i++){
+            if(i == activeIndex-1){
+                indicatorChild[i].className = 'li-active';
+            }else {
+                indicatorChild[i].className = '';
+            }
+        }
+    }
+    
+    function criticality(boundary,flag) {
+        //继续走临界的轮播
+        play(-(width * currentIndex),boundary);
+        //.slide的transition时间是1.5s，在刚好达到transition时间时将left立即重置、从而让客户看不出表面上的变化
+        setTimeout(function () {
+            slide.style.left = -width*boundary + 'px';
+            slide.style.transition = 'left 0s';
+            currentIndex = boundary;
+        }, 1500);
+        //在图3到图1 或 图1到图3的transition时间内，禁用按钮
+        var now=(new Date()).getTime()+1500;
+        if((new Date()).getTime()<=now){
+            if(flag == 'left'){
+                leftBtn.disabled=true;
+                setTimeout(function () {
+                    leftBtn.disabled=false;
+                },now-(new Date()).getTime())
+            }else {
+                rightBtn.disabled=true;
+                setTimeout(function () {
+                    rightBtn.disabled=false;
+                },now-(new Date()).getTime())
+            }
+        }
+    }
+  </script>
+</body>
+</html>

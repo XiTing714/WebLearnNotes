@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+  .news {
+  background-color: gray;
+  border: solid 1px black;
+  overflow: hidden;
+  /* display: inline-block; */
+  }
+
+  .news .div1 {
+    float: left;
+    background-color: tomato;
+    height: 250px;
+    width: 250px;
+    text-align: center;
+    display: -webkit-box;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    }
+
+    #para {
+      border: solid 1px blueviolet;
+    }
+
+  /* .news .div2 {
+    float: right;
+    border: solid 1px;
+    clear: left;
+    zoom: 1;
+    } */
+
+/*   .news::after {
+    content: " ";
+    display: block;
+    clear: both;
+  } */
+
+  /* .clear {
+    clear: both;
+    height: 50px;
+    background-color: blueviolet;
+    } */
+    
+  /* .div3 {
+    height: 70px;
+    background-color: rgb(11, 124, 115);
+  } */
+</style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>清除float</title>
+</head>
+<body>
+  <div class="news">
+    <div class="div1">
+      <div id="para">
+        <p>床前明月光</p>
+        <p>疑是地上霜</p>
+      </div>
+    </div>
+    <!-- <div class="div3"></div> -->
+    <!-- <div class="div2">some text</div> -->
+
+    <!-- <div class="clear"></div> -->
+    
+  </div>
+</body>
+</html>

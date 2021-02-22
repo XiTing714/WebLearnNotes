@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<link>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tab导航栏切换</title>
+  <link rel="stylesheet" href="./tab.css">
+</head>
+<body>
+  <div class="wrap">
+		<div class="container-top" id="list">
+			<ul>
+				<li><a href="">论坛</a></li>
+				<li><a href="">博客</a></li>
+				<li><a href="">交流</a></li>
+				<li><a href="">社区</a></li>
+				<li><a href="">反馈</a></li>
+			</ul>
+		</div>
+		<div class="container-bottom" id="item">
+			<div class="con">
+				<ul>
+					<li><a href="#">论坛A</a></li>
+					<li><a href="#">论坛B</a></li>
+					<li><a href="#">论坛C</a></li>
+					<li><a href="#">论坛D</a></li>
+				</ul>
+			</div>
+			<div class="con">
+				<ul>
+					<li><a href="#">博客A</a></li>
+					<li><a href="#">博客B</a></li>
+					<li><a href="#">博客C</a></li>
+					<li><a href="#">博客D</a></li>
+				</ul>
+			</div>
+			<div class="con">
+				<ul>
+					<li><a href="#">交流A</a></li>
+					<li><a href="#">交流B</a></li>
+					<li><a href="#">交流C</a></li>
+					<li><a href="#">交流D</a></li>
+				</ul>
+			</div>
+			<div class="con">
+				<ul>
+					<li><a href="#">社区A</a></li>
+					<li><a href="#">社区B</a></li>
+					<li><a href="#">社区C</a></li>
+					<li><a href="#">社区D</a></li>
+				</ul>
+			</div>
+			<div class="con">
+				<ul>
+					<li><a href="#">反馈A</a></li>
+					<li><a href="#">反馈B</a></li>
+					<li><a href="#">反馈C</a></li>
+					<li><a href="#">反馈D</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+  <script>
+    function $(id){
+		return typeof id ==="string"?document.getElementById(id):document;
+	}
+	
+    window.onload = function(){
+      //初始化计时器;
+      var timer = null;
+      //初始化索引;
+      var index = -1;
+      var items = $("list").getElementsByTagName("li");
+      var divs = $("item").getElementsByTagName("div");
+    
+    
+      function autoPlay(){
+        index++;
+        if(index > 4) index = 0;
+        for(var i = 0,len = items.length; i < len; i++){
+          items[i].className = "";
+          divs[i].style.display = "none";
+        }
+        items[index].className = "select";
+        divs[index].style.display = "block";
+      }
+    
+      timer = setInterval(autoPlay,2000);
+    
+    }
+  </script>
+</body>
+</html>
